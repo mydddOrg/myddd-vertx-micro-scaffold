@@ -1,6 +1,7 @@
 package org.myddd.vertx.document.domain
 
 import io.vertx.core.Future
+import io.vertx.kotlin.coroutines.await
 import org.myddd.vertx.ioc.InstanceFactory
 import javax.persistence.*
 import javax.persistence.Entity
@@ -13,7 +14,7 @@ import org.myddd.vertx.domain.BaseEntity
     ],
     uniqueConstraints = [UniqueConstraint(columnNames = ["media_id"])]
 )
-class Document: BaseEntity() {
+class Document: DistributeIDEntity() {
 
     @Column(nullable = false,length = 36)
     lateinit var name:String
@@ -30,6 +31,7 @@ class Document: BaseEntity() {
 
     companion object {
         private val repository by lazy { InstanceFactory.getInstance(DocumentRepository::class.java) }
+        private val distributeID by lazy { InstanceFactory.getInstance(DistributeID::class.java) }
 
         suspend fun queryDocumentById(id:Long):Future<Document?>{
             return repository.get(Document::class.java,id)
@@ -42,6 +44,7 @@ class Document: BaseEntity() {
 
     suspend fun createDocument():Future<Document>{
         return try {
+            this.id = distributeID.nextId().await()
             repository.save(this)
         }catch (t:Throwable){
             Future.failedFuture(t)

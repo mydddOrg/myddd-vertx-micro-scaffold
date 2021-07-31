@@ -1,4 +1,4 @@
-package org.myddd.vertx.document.application
+package org.myddd.vertx.document.bootstrap
 
 import com.google.protobuf.Int64Value
 import io.vertx.core.Future
@@ -10,7 +10,6 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
-import org.myddd.vertx.document.AbstractTest
 import org.myddd.vertx.document.api.DocumentDTO
 import org.myddd.vertx.document.api.DocumentGrpcService
 import org.myddd.vertx.document.api.VertxDocumentApplicationGrpc

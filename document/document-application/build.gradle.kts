@@ -44,6 +44,10 @@ dependencies {
     testImplementation("org.myddd.vertx:myddd-vertx-ioc-guice:${rootProject.extra["myddd_vertx_version"]}")
     testImplementation("org.myddd.vertx:myddd-vertx-querychannel-hibernate:${rootProject.extra["myddd_vertx_version"]}")
     testImplementation("org.myddd.vertx:myddd-vertx-grpc-provider:${rootProject.extra["myddd_vertx_version"]}")
+
+    testImplementation(project(":distributed-id:distributed-id-api"))
+    testImplementation(project(":distributed-id:distributed-id-application"))
+
 }
 
 sourceSets.main {

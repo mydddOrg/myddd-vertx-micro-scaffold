@@ -32,6 +32,7 @@ dependencies {
     implementation("javax.annotation:javax.annotation-api:${rootProject.extra["annotation-api"]}")
     implementation("org.myddd.vertx:myddd-vertx-grpc-api:${rootProject.extra["myddd_vertx_version"]}")
     implementation("io.vertx:vertx-service-discovery:${rootProject.extra["vertx_version"]}")
+    implementation("com.google.protobuf:protobuf-java:3.17.3")
 
 
     //依赖注入

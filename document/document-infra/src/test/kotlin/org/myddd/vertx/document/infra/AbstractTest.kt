@@ -12,6 +12,8 @@ import org.hibernate.reactive.mutiny.Mutiny
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.extension.ExtendWith
 import org.myddd.vertx.document.domain.DocumentRepository
+import org.myddd.vertx.grpc.GrpcInstanceProvider
+import org.myddd.vertx.grpc.ServiceDiscoveryGrpcInstanceProvider
 import org.myddd.vertx.id.IDGenerator
 import org.myddd.vertx.id.SnowflakeDistributeId
 import org.myddd.vertx.ioc.InstanceFactory
@@ -38,10 +40,10 @@ abstract class AbstractTest {
                                 Persistence.createEntityManagerFactory("default")
                                     .unwrap(Mutiny.SessionFactory::class.java))
                             bind(IDGenerator::class.java).toInstance(SnowflakeDistributeId())
-
                             bind(RandomIDString::class.java).to(RandomIDStringProvider::class.java)
-
                             bind(DocumentRepository::class.java).to(DocumentRepositoryHibernate::class.java)
+
+                            bind(GrpcInstanceProvider::class.java).to(ServiceDiscoveryGrpcInstanceProvider::class.java)
                         }
                     })))
                 }catch (t:Throwable){

@@ -19,10 +19,14 @@ dependencies {
     //other layer
     implementation(project(":document:document-domain"))
 
+    implementation(project(":distributed-id:distributed-id-api"))
+
     //api
     api("org.myddd.vertx:myddd-vertx-ioc-api:${rootProject.extra["myddd_vertx_version"]}")
     api("org.myddd.vertx:myddd-vertx-repository-api:${rootProject.extra["myddd_vertx_version"]}")
     api("org.myddd.vertx:myddd-vertx-repository-hibernate:${rootProject.extra["myddd_vertx_version"]}")
+
+    api("org.myddd.vertx:myddd-vertx-grpc-api:${rootProject.extra["myddd_vertx_version"]}")
 
     //api implementation
     api("org.hibernate.reactive:hibernate-reactive-core:${rootProject.extra["hibernate_reactive_version"]}")
@@ -34,4 +38,8 @@ dependencies {
     testImplementation("org.myddd.vertx:myddd-vertx-ioc-guice:${rootProject.extra["myddd_vertx_version"]}")
     testImplementation("io.vertx:vertx-mysql-client:${rootProject.extra["vertx_version"]}")
     testImplementation("io.vertx:vertx-junit5:${rootProject.extra["vertx_version"]}")
+
+    testImplementation("org.myddd.vertx:myddd-vertx-grpc-provider:${rootProject.extra["myddd_vertx_version"]}")
+    testImplementation(project(":distributed-id:distributed-id-application"))
+
 }

@@ -17,9 +17,9 @@ dependencies {
     api("io.vertx:vertx-lang-kotlin:${rootProject.extra["vertx_version"]}")
     api("io.vertx:vertx-lang-kotlin-coroutines:${rootProject.extra["vertx_version"]}")
 
-    implementation("io.vertx:vertx-grpc:${rootProject.extra["vertx_version"]}")
-    implementation("javax.annotation:javax.annotation-api:${rootProject.extra["annotation-api"]}")
-    implementation("com.google.protobuf:protobuf-java:${rootProject.extra["protobuf-java"]}")
+    api("io.vertx:vertx-grpc:${rootProject.extra["vertx_version"]}")
+    api("javax.annotation:javax.annotation-api:${rootProject.extra["annotation-api"]}")
+    api("com.google.protobuf:protobuf-java:${rootProject.extra["protobuf-java"]}")
 
     implementation("org.myddd.vertx:myddd-vertx-grpc-api:${rootProject.extra["myddd_vertx_version"]}")
 
