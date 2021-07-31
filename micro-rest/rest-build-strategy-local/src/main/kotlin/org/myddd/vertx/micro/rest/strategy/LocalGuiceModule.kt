@@ -5,6 +5,10 @@ import io.vertx.core.Vertx
 import io.vertx.ext.web.client.WebClient
 import org.hibernate.reactive.mutiny.Mutiny
 import org.myddd.vertx.config.Config
+import org.myddd.vertx.document.domain.DistributeID
+import org.myddd.vertx.document.domain.DocumentRepository
+import org.myddd.vertx.document.infra.DocumentRepositoryHibernate
+import org.myddd.vertx.document.infra.GrpcDistributeID
 import org.myddd.vertx.file.FileDigest
 import org.myddd.vertx.file.FileDigestProvider
 import org.myddd.vertx.grpc.GrpcInstanceProvider
@@ -31,6 +35,8 @@ class LocalGuiceModule(private val vertx: Vertx): AbstractModule() {
                 .unwrap(Mutiny.SessionFactory::class.java))
         bind(IDGenerator::class.java).to(SnowflakeDistributeId::class.java)
         bind(FileDigest::class.java).to(FileDigestProvider::class.java)
+        bind(DistributeID::class.java).to(GrpcDistributeID::class.java)
+        bind(DocumentRepository::class.java).to(DocumentRepositoryHibernate::class.java)
     }
 
     companion object {
