@@ -1,7 +1,8 @@
-package com.foreverht.codebee.rest.bootstrap
+package org.myddd.vertx.micro.rest.bootstrap
 
 import io.vertx.core.Vertx
 import io.vertx.core.impl.logging.LoggerFactory
+import io.vertx.ext.web.client.WebClient
 import io.vertx.junit5.VertxExtension
 import io.vertx.junit5.VertxTestContext
 import io.vertx.kotlin.coroutines.await
@@ -10,6 +11,8 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.extension.ExtendWith
+import org.myddd.vertx.ioc.InstanceFactory
+import java.util.*
 
 @ExtendWith(VertxExtension::class)
 open class AbstractTest {
@@ -23,6 +26,10 @@ open class AbstractTest {
         const val host = "127.0.0.1"
 
         const val port = 8080
+
+        val webClient: WebClient by lazy {
+            InstanceFactory.getInstance(WebClient::class.java)
+        }
 
 
         @BeforeAll
@@ -46,6 +53,10 @@ open class AbstractTest {
                     testContext.failNow(t)
                 }
             }
+        }
+
+        fun randomString():String {
+            return UUID.randomUUID().toString()
         }
     }
 

@@ -1,4 +1,4 @@
-package com.foreverht.codebee.rest.bootstrap
+package org.myddd.vertx.micro.rest.bootstrap
 
 import org.myddd.vertx.error.ErrorCode
 

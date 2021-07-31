@@ -5,14 +5,14 @@ plugins {
     id("com.github.johnrengelman.shadow") version "6.1.0"
 }
 
-group = "com.foreverht.codebee.model"
+group = "org.myddd.vertx.micro"
 version = rootProject.extra["version"]!!
 
 tasks.withType<Test>().configureEach {
     useJUnitPlatform()
 }
 
-val mainVerticleName = "com.foreverht.codebee.rest.bootstrap.MyBootstrapVerticle"
+val mainVerticleName = "org.myddd.vertx.micro.rest.bootstrap.MyBootstrapVerticle"
 val launcherClassName = "io.vertx.core.Launcher"
 
 application {
@@ -36,13 +36,18 @@ dependencies {
 
     implementation("org.myddd.vertx:myddd-vertx-web:${rootProject.extra["myddd_vertx_version"]}")
 
-    //依赖接口
-    implementation(project(":document:document-api"))
     implementation(project(":distributed-id:distributed-id-api"))
-
-    //依赖实现，为了单机版
-    implementation(project(":document:document-application"))
     implementation(project(":distributed-id:distributed-id-application"))
+    implementation(project(":distributed-id:distributed-id-infra"))
+    implementation(project(":distributed-id:distributed-id-domain"))
+
+
+    implementation(project(":document:document-api"))
+    implementation(project(":document:document-application"))
+    implementation(project(":document:document-domain"))
+    implementation(project(":document:document-infra"))
+
+
 
     api("org.myddd.vertx:myddd-vertx-base-api:${rootProject.extra["myddd_vertx_version"]}")
     api("org.myddd.vertx:myddd-vertx-ioc-api:${rootProject.extra["myddd_vertx_version"]}")

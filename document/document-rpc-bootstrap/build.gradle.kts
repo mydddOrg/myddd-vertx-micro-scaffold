@@ -12,7 +12,7 @@ tasks.withType<Test>().configureEach {
     useJUnitPlatform()
 }
 
-val mainVerticleName = "org.myddd.vertx.distributed.bootstrap.MyBootstrapVerticle"
+val mainVerticleName = "org.myddd.vertx.document.bootstrap.MyBootstrapVerticle"
 val launcherClassName = "io.vertx.core.Launcher"
 
 application {

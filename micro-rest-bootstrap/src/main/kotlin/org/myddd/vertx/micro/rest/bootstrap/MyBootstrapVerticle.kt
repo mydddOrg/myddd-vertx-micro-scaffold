@@ -1,9 +1,10 @@
-package com.foreverht.codebee.rest.bootstrap
+package org.myddd.vertx.micro.rest.bootstrap
 
 import io.vertx.kotlin.coroutines.CoroutineVerticle
 import io.vertx.kotlin.coroutines.await
 import org.myddd.vertx.config.Config
 import org.myddd.vertx.grpc.GrpcHealthCheckVerticle
+import org.myddd.vertx.micro.rest.bootstrap.ext.isStandalone
 
 class MyBootstrapVerticle: CoroutineVerticle() {
 
@@ -13,12 +14,10 @@ class MyBootstrapVerticle: CoroutineVerticle() {
     override suspend fun start() {
         super.start()
         deployIds.add(vertx.deployVerticle(WebBootstrapVerticle()).await())
-        if(Config.getBoolean("standalone",false)){
+
+        if(Config.isStandalone()){
             deployIds.add(vertx.deployVerticle(GrpcServiceBootstrapVerticle()).await())
         }
-//        else{
-//            deployIds.add(vertx.deployVerticle(GrpcHealthCheckVerticle()).await())
-//        }
     }
 
     override suspend fun stop() {
