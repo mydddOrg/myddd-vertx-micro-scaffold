@@ -27,7 +27,7 @@ tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
     mergeServiceFiles()
 }
 
-val localBuild = if(project.hasProperty("local")) project.property("local") as String == "true" else false
+val localBuild = if(project.hasProperty("local")) project.property("local") as String == "true" else true
 
 dependencies {
     implementation(kotlin("stdlib"))

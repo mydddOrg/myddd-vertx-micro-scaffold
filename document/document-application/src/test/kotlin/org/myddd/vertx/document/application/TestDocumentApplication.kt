@@ -58,7 +58,7 @@ class TestDocumentApplication:AbstractTest() {
                 }.await()
 
                 testContext.verify {
-                    Assertions.assertTrue(notExists.hasNull())
+                    Assertions.assertFalse(notExists.hasData())
                 }
             }catch (t:Throwable){
                 testContext.failNow(t)
