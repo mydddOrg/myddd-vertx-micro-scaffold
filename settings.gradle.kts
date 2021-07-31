@@ -14,5 +14,7 @@ include("distributed-id:distributed-id-infra")
 include("distributed-id:distributed-id-application")
 include("distributed-id:distributed-id-rpc-bootstrap")
 
-
-include("micro-rest-bootstrap")
+include("micro-rest:rest-build-strategy-api")
+include("micro-rest:micro-rest-bootstrap")
+include("micro-rest:rest-build-strategy-distributed")
+include("micro-rest:rest-build-strategy-local")
