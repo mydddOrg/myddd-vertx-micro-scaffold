@@ -1,10 +1,11 @@
-package org.myddd.vertx.document.bootstrap
+package org.myddd.vertx.distributed.bootstrap
 
 import com.google.inject.AbstractModule
 import io.grpc.BindableService
 import io.vertx.core.Vertx
 import org.myddd.vertx.distributed.application.DistributedIdApplication
 import org.myddd.vertx.grpc.GrpcBootstrapVerticle
+import org.myddd.vertx.grpc.health.HealthCheckApplication
 import org.myddd.vertx.ioc.InstanceFactory
 
 class MyBootstrapVerticle : GrpcBootstrapVerticle(){
@@ -21,7 +22,7 @@ class MyBootstrapVerticle : GrpcBootstrapVerticle(){
 
     override fun services(): List<BindableService> {
         return arrayListOf(
-            InstanceFactory.getInstance(DistributedIdApplication::class.java)
+            InstanceFactory.getInstance(DistributedIdApplication::class.java),
         )
     }
 }

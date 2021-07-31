@@ -56,12 +56,15 @@ dependencies {
     api(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
 
     implementation("io.vertx:vertx-mysql-client:${rootProject.extra["vertx_version"]}")
+    implementation("io.vertx:vertx-hazelcast:${rootProject.extra["vertx_version"]}")
 
     implementation("org.myddd.vertx:myddd-vertx-i18n-provider:${rootProject.extra["myddd_vertx_version"]}")
     implementation("org.myddd.vertx:myddd-vertx-base-provider:${rootProject.extra["myddd_vertx_version"]}")
     implementation("org.myddd.vertx:myddd-vertx-cache-sharedata:${rootProject.extra["myddd_vertx_version"]}")
 
     implementation("org.myddd.vertx:myddd-vertx-grpc-provider:${rootProject.extra["myddd_vertx_version"]}")
+    implementation("org.myddd.vertx:myddd-vertx-grpc-servicetype:${rootProject.extra["myddd_vertx_version"]}")
+
     implementation("io.vertx:vertx-service-discovery:${rootProject.extra["vertx_version"]}")
 
 

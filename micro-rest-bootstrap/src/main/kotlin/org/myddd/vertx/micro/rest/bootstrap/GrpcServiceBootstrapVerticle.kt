@@ -6,6 +6,7 @@ import io.vertx.core.Vertx
 import org.myddd.vertx.distributed.application.DistributedIdApplication
 import org.myddd.vertx.document.application.DocumentApplication
 import org.myddd.vertx.grpc.GrpcBootstrapVerticle
+import org.myddd.vertx.grpc.health.HealthCheckApplication
 
 class GrpcServiceBootstrapVerticle:GrpcBootstrapVerticle() {
 
@@ -16,7 +17,10 @@ class GrpcServiceBootstrapVerticle:GrpcBootstrapVerticle() {
     override fun services(): List<BindableService> {
         return arrayListOf(
             DocumentApplication(),
-            DistributedIdApplication()
+            DistributedIdApplication(),
+            HealthCheckApplication()
         )
     }
+
+
 }

@@ -17,7 +17,7 @@ import org.myddd.vertx.document.domain.DocumentType
 import org.myddd.vertx.grpc.GrpcInstanceFactory
 import java.util.*
 
-class TestDocumentApplication:AbstractTest() {
+class TestDocumentApplication: AbstractTest() {
 
     private val documentApplication by lazy {
         GrpcInstanceFactory.getInstance<VertxDocumentApplicationGrpc.DocumentApplicationVertxStub>(DocumentGrpcService.DocumentService)

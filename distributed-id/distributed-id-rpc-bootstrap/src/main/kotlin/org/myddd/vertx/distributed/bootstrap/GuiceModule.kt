@@ -1,4 +1,4 @@
-package org.myddd.vertx.document.bootstrap
+package org.myddd.vertx.distributed.bootstrap
 
 import io.vertx.core.Vertx
 import org.myddd.vertx.distributed.application.DistributedIdApplication

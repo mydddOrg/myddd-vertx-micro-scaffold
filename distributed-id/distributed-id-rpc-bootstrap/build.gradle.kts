@@ -37,6 +37,7 @@ dependencies {
     implementation("io.vertx:vertx-hazelcast:${rootProject.extra["vertx_version"]}")
 
     implementation("org.myddd.vertx:myddd-vertx-web:${rootProject.extra["myddd_vertx_version"]}")
+    implementation("io.vertx:vertx-hazelcast:${rootProject.extra["vertx_version"]}")
 
     implementation(project(":distributed-id:distributed-id-domain"))
     implementation(project(":distributed-id:distributed-id-api"))

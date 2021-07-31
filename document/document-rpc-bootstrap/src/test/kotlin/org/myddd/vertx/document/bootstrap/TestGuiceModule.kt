@@ -10,7 +10,7 @@ import org.myddd.vertx.document.infra.GrpcDistributeID
 import org.myddd.vertx.grpc.GrpcInstanceProvider
 import org.myddd.vertx.grpc.ServiceDiscoveryGrpcInstanceProvider
 
-class TestGuiceModule(vertx: Vertx):AbstractWebModule(vertx) {
+class TestGuiceModule(vertx: Vertx): AbstractWebModule(vertx) {
 
     override fun configure() {
         super.configure()
