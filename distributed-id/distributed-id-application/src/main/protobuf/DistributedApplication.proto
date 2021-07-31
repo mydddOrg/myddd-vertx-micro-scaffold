@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/wrappers.proto";
+
+option java_multiple_files = true;
+option java_package = "org.myddd.vertx.distributed.api";
+option java_outer_classname = "DistributedIdApplicationProto";
+package org.myddd.vertx.distributed.api;
+
+service DistributedIdApplication {
+  rpc distributedId (google.protobuf.Empty) returns (google.protobuf.Int64Value) {}
+}
