@@ -13,6 +13,8 @@ import org.myddd.vertx.document.domain.Document
 import org.myddd.vertx.document.domain.DocumentRepository
 import org.myddd.vertx.document.domain.DocumentType
 import org.myddd.vertx.ioc.InstanceFactory
+import kotlin.random.Random
+import kotlin.random.nextULong
 
 class TestDocumentRepository:AbstractTest() {
 
@@ -48,6 +50,7 @@ class TestDocumentRepository:AbstractTest() {
     private suspend fun randomCreateDocument():Future<Document>{
         return try {
             val document = Document()
+            document.id = Random.nextULong().toLong()
             document.mediaId = randomString()
             document.name = randomString()
             document.documentType = DocumentType.File

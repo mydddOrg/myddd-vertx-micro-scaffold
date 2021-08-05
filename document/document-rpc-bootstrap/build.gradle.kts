@@ -75,5 +75,6 @@ dependencies {
     testImplementation("io.vertx:vertx-junit5:${rootProject.extra["vertx_version"]}")
     testImplementation(project(":distributed-id:distributed-id-application"))
     testImplementation(project(":distributed-id:distributed-id-infra"))
+    testImplementation("com.fasterxml.jackson.core:jackson-databind:${rootProject.extra["jackson_version"]}")
 
 }
