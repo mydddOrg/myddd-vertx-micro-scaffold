@@ -32,7 +32,9 @@ dependencies {
     api("org.hibernate.reactive:hibernate-reactive-core:${rootProject.extra["hibernate_reactive_version"]}")
     api("org.myddd.vertx:myddd-vertx-base-provider:${rootProject.extra["myddd_vertx_version"]}")
     implementation("org.apache.logging.log4j:log4j-core:${rootProject.extra["log4j_version"]}")
+
     implementation("com.fasterxml.jackson.core:jackson-databind:${rootProject.extra["jackson_version"]}")
+    implementation("com.fasterxml.jackson.core:jackson-annotations:${rootProject.extra["jackson_version"]}")
 
     //test
     testImplementation("org.myddd.vertx:myddd-vertx-ioc-guice:${rootProject.extra["myddd_vertx_version"]}")

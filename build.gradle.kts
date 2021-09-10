@@ -22,7 +22,7 @@ extra["vertx_version"] = "4.1.2"
 extra["version"] = version
 
 extra["log4j_version"] = "2.14.0"
-extra["jackson_version"] = "2.12.1"
+extra["jackson_version"] = "2.12.5"
 extra["javax_persistence_version"] = "2.2.1"
 extra["mockito_version"] = "3.7.7"
 extra["junit5_version"] = "5.7.1"

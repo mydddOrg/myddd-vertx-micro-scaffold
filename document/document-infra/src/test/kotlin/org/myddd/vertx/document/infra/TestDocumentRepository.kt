@@ -50,7 +50,7 @@ class TestDocumentRepository:AbstractTest() {
     private suspend fun randomCreateDocument():Future<Document>{
         return try {
             val document = Document()
-            document.id = Random.nextULong().toLong()
+            document.id = Random.nextLong();
             document.mediaId = randomString()
             document.name = randomString()
             document.documentType = DocumentType.File

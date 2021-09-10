@@ -1,6 +1,10 @@
+import com.google.protobuf.gradle.*
+
 plugins {
     java
     kotlin("jvm")
+    id("com.google.protobuf")
+    id("idea")
 }
 
 group = "org.myddd.vertx.distributed"
@@ -24,4 +28,32 @@ dependencies {
     implementation("org.myddd.vertx:myddd-vertx-grpc-api:${rootProject.extra["myddd_vertx_version"]}")
 
     testImplementation("io.vertx:vertx-junit5:${rootProject.extra["vertx_version"]}")
+}
+
+
+sourceSets.main {
+    proto.srcDir("src/main/protobuf")
+}
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:${rootProject.extra["protobuf-java"]}"
+    }
+    plugins {
+        id("grpc") {
+            artifact = "io.grpc:protoc-gen-grpc-java:1.39.0"
+        }
+
+        id("vertx") {
+            artifact = "io.vertx:vertx-grpc-protoc-plugin:${rootProject.extra["vertx_version"]}"
+        }
+    }
+    generateProtoTasks {
+        ofSourceSet("main").forEach {
+            it.plugins {
+                id("grpc")
+                id("vertx")
+            }
+        }
+    }
 }
