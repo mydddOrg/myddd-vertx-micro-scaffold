@@ -71,6 +71,8 @@ dependencies {
     implementation("com.google.protobuf:protobuf-java:${rootProject.extra["protobuf-java"]}")
     api("org.myddd.vertx:myddd-vertx-grpc-api:${rootProject.extra["myddd_vertx_version"]}")
     api("org.myddd.vertx:myddd-vertx-grpc-provider:${rootProject.extra["myddd_vertx_version"]}")
+    api("org.myddd.vertx:myddd-vertx-grpc-servicetype:${rootProject.extra["myddd_vertx_version"]}")
+
 
     implementation("io.vertx:vertx-json-schema:${rootProject.extra["vertx_version"]}")
     implementation("org.apache.logging.log4j:log4j-core:${rootProject.extra["log4j_version"]}")
