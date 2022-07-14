@@ -18,6 +18,7 @@ import org.myddd.vertx.id.IDGenerator
 import org.myddd.vertx.id.SnowflakeDistributeId
 import org.myddd.vertx.ioc.InstanceFactory
 import org.myddd.vertx.ioc.guice.GuiceInstanceProvider
+import org.myddd.vertx.repository.hibernate.MydddServiceContributor
 
 @ExtendWith(VertxExtension::class)
 abstract class AbstractTest {
@@ -26,13 +27,15 @@ abstract class AbstractTest {
 
         private lateinit var deployId:String
 
+        private val vertx by lazy { Vertx.vertx() }
+
         @BeforeAll
         @JvmStatic
-        fun beforeAll(vertx: Vertx,testContext: VertxTestContext){
+        fun beforeAll(testContext: VertxTestContext){
             GlobalScope.launch(vertx.dispatcher()) {
                 try {
-                    initIOC(vertx).await()
-                    startVerticle(vertx).await()
+                    initIOC().await()
+                    startVerticle().await()
                 }catch (t:Throwable){
                     testContext.failNow(t)
                 }
@@ -40,10 +43,10 @@ abstract class AbstractTest {
             }
         }
 
-        fun afterAll(vertx: Vertx,testContext: VertxTestContext){
+        fun afterAll(testContext: VertxTestContext){
             GlobalScope.launch(vertx.dispatcher()) {
                 try {
-                    stopVerticle(vertx).await()
+                    stopVerticle().await()
                 }catch (t:Throwable){
                     testContext.failNow(t)
                 }
@@ -51,7 +54,7 @@ abstract class AbstractTest {
             }
         }
 
-        private suspend fun startVerticle(vertx: Vertx):Future<Unit>{
+        private suspend fun startVerticle():Future<Unit>{
             return try {
                 deployId = vertx.deployVerticle(AbstractGrpcBootstrapVerticle()).await()
                 Future.succeededFuture()
@@ -60,7 +63,7 @@ abstract class AbstractTest {
             }
         }
 
-        private suspend fun stopVerticle(vertx: Vertx):Future<Unit>{
+        private suspend fun stopVerticle():Future<Unit>{
             return try {
                 vertx.undeploy(deployId).await()
                 Future.succeededFuture()
@@ -69,15 +72,21 @@ abstract class AbstractTest {
             }
         }
 
-        private fun initIOC(vertx: Vertx):Future<Unit>{
+        private suspend fun initIOC():Future<Unit>{
             return try {
-                InstanceFactory.setInstanceProvider(GuiceInstanceProvider(Guice.createInjector(object : AbstractModule(){
-                    override fun configure() {
-                        bind(Vertx::class.java).toInstance(vertx)
-                        bind(IDGenerator::class.java).toInstance(SnowflakeDistributeId())
-                        bind(GrpcInstanceProvider::class.java).to(ServiceDiscoveryGrpcInstanceProvider::class.java)
-                    }
-                })))
+                vertx.executeBlocking<Unit> {
+                    InstanceFactory.setInstanceProvider(GuiceInstanceProvider(Guice.createInjector(object : AbstractModule(){
+                        override fun configure() {
+                            bind(Vertx::class.java).toInstance(vertx)
+                            MydddServiceContributor.vertx = vertx
+                            bind(IDGenerator::class.java).toInstance(SnowflakeDistributeId())
+                            bind(GrpcInstanceProvider::class.java).to(ServiceDiscoveryGrpcInstanceProvider::class.java)
+                        }
+                    })))
+
+                    it.complete()
+                }.await()
+
                 Future.succeededFuture()
             }catch (t:Throwable){
                 Future.failedFuture(t)

@@ -6,6 +6,7 @@ import org.myddd.vertx.ioc.InstanceFactory
 import javax.persistence.*
 import javax.persistence.Entity
 import org.myddd.vertx.domain.BaseEntity
+import java.io.Serializable
 
 @Entity
 @Table(name = "document",

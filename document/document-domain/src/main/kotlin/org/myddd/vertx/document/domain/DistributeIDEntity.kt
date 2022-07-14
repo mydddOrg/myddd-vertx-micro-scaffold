@@ -1,6 +1,7 @@
 package org.myddd.vertx.document.domain
 
 import org.myddd.vertx.domain.Entity
+import java.io.Serializable
 import javax.persistence.Id
 import javax.persistence.MappedSuperclass
 import javax.persistence.Version
@@ -24,6 +25,10 @@ abstract class DistributeIDEntity: Entity {
 
     override fun getId(): Long {
         return id
+    }
+
+    override fun setId(id: Serializable) {
+        this.id = id as Long
     }
 
 }

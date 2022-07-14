@@ -11,6 +11,7 @@ import io.vertx.kotlin.coroutines.dispatcher
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.hibernate.reactive.mutiny.Mutiny
+import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.extension.ExtendWith
 import org.myddd.vertx.document.domain.DistributeID
@@ -21,8 +22,13 @@ import org.myddd.vertx.grpc.GrpcInstanceProvider
 import org.myddd.vertx.grpc.ServiceDiscoveryGrpcInstanceProvider
 import org.myddd.vertx.id.IDGenerator
 import org.myddd.vertx.id.SnowflakeDistributeId
+import org.myddd.vertx.id.StringIDGenerator
+import org.myddd.vertx.id.ULIDStringGenerator
 import org.myddd.vertx.ioc.InstanceFactory
 import org.myddd.vertx.ioc.guice.GuiceInstanceProvider
+import org.myddd.vertx.querychannel.api.QueryChannel
+import org.myddd.vertx.querychannel.hibernate.QueryChannelHibernate
+import org.myddd.vertx.repository.hibernate.MydddServiceContributor
 import org.myddd.vertx.string.RandomIDString
 import org.myddd.vertx.string.RandomIDStringProvider
 import javax.persistence.Persistence
@@ -34,12 +40,41 @@ abstract class AbstractTest {
 
         private lateinit var deployId:String
 
+        private val vertx by lazy { Vertx.vertx() }
+
+        private val guiceInstanceProvider by lazy {
+            GuiceInstanceProvider(Guice.createInjector(object : AbstractModule(){
+                override fun configure() {
+                    bind(Vertx::class.java).toInstance(vertx)
+                    MydddServiceContributor.vertx = vertx
+
+                    bind(Mutiny.SessionFactory::class.java).toInstance(
+                        Persistence.createEntityManagerFactory("default")
+                            .unwrap(Mutiny.SessionFactory::class.java))
+
+                    bind(IDGenerator::class.java).toInstance(SnowflakeDistributeId())
+
+                    bind(RandomIDString::class.java).to(RandomIDStringProvider::class.java)
+                    bind(DocumentRepository::class.java).to(DocumentRepositoryHibernate::class.java)
+
+                    bind(DistributeID::class.java).to(GrpcDistributeID::class.java)
+                    bind(GrpcInstanceProvider::class.java).to(ServiceDiscoveryGrpcInstanceProvider::class.java)
+                }
+            }))
+        }
+
         @BeforeAll
         @JvmStatic
-        fun beforeAll(vertx: Vertx,testContext: VertxTestContext){
+        fun beforeAll(testContext: VertxTestContext){
             GlobalScope.launch(vertx.dispatcher()) {
                 try {
-                    initIOC(vertx).await()
+                    vertx.executeBlocking<Unit> {
+                        InstanceFactory.setInstanceProvider(guiceInstanceProvider)
+                        it.complete()
+                    }.await()
+
+
+
                     startVerticle(vertx).await()
                 }catch (t:Throwable){
                     testContext.failNow(t)
@@ -47,6 +82,7 @@ abstract class AbstractTest {
                 testContext.completeNow()
             }
         }
+
 
         fun afterAll(vertx: Vertx,testContext: VertxTestContext){
             GlobalScope.launch(vertx.dispatcher()) {
@@ -71,29 +107,6 @@ abstract class AbstractTest {
         private suspend fun stopVerticle(vertx: Vertx):Future<Unit>{
             return try {
                 vertx.undeploy(deployId).await()
-                Future.succeededFuture()
-            }catch (t:Throwable){
-                Future.failedFuture(t)
-            }
-        }
-
-        private fun initIOC(vertx: Vertx):Future<Unit>{
-            return try {
-                InstanceFactory.setInstanceProvider(GuiceInstanceProvider(Guice.createInjector(object : AbstractModule(){
-                    override fun configure() {
-                        bind(Vertx::class.java).toInstance(vertx)
-                        bind(Mutiny.SessionFactory::class.java).toInstance(
-                            Persistence.createEntityManagerFactory("default")
-                                .unwrap(Mutiny.SessionFactory::class.java))
-                        bind(IDGenerator::class.java).toInstance(SnowflakeDistributeId())
-
-                        bind(RandomIDString::class.java).to(RandomIDStringProvider::class.java)
-                        bind(DocumentRepository::class.java).to(DocumentRepositoryHibernate::class.java)
-
-                        bind(DistributeID::class.java).to(GrpcDistributeID::class.java)
-                        bind(GrpcInstanceProvider::class.java).to(ServiceDiscoveryGrpcInstanceProvider::class.java)
-                    }
-                })))
                 Future.succeededFuture()
             }catch (t:Throwable){
                 Future.failedFuture(t)

@@ -16,6 +16,7 @@ import org.myddd.vertx.document.api.DocumentGrpcService
 import org.myddd.vertx.document.api.VertxDocumentApplicationGrpc
 import org.myddd.vertx.document.domain.DocumentType
 import org.myddd.vertx.grpc.GrpcInstanceFactory
+import org.myddd.vertx.junit.execute
 import java.util.*
 
 class TestDocumentApplication:AbstractTest() {
@@ -25,45 +26,35 @@ class TestDocumentApplication:AbstractTest() {
     }
 
     @Test
-    fun testCreateDocument(vertx: Vertx, testContext: VertxTestContext){
-        GlobalScope.launch(vertx.dispatcher()) {
-            try {
-                val created = randomCreateDocument().await()
-                testContext.verify {
-                    Assertions.assertNotNull(created)
-                }
-            }catch (t:Throwable){
-                testContext.failNow(t)
+    fun testCreateDocument(testContext: VertxTestContext){
+        testContext.execute {
+            val created = randomCreateDocument().await()
+            testContext.verify {
+                Assertions.assertNotNull(created)
             }
-            testContext.completeNow()
         }
     }
 
     @Test
     fun testQueryByMediaId(vertx: Vertx, testContext: VertxTestContext){
-        GlobalScope.launch(vertx.dispatcher()) {
-            try {
-                val created = randomCreateDocument().await()
+        testContext.execute {
+            val created = randomCreateDocument().await()
 
-                val queryDocument = documentApplication.rpcRun {
-                    it.queryDocumentById(Int64Value.of(created.id))
-                }.await()
+            val queryDocument = documentApplication.rpcRun {
+                it.queryDocumentById(Int64Value.of(created.id))
+            }.await()
 
-                testContext.verify {
-                    Assertions.assertNotNull(queryDocument)
-                }
-
-                val notExists = documentApplication.rpcRun {
-                    it.queryDocumentById(Int64Value.of(-1))
-                }.await()
-
-                testContext.verify {
-                    Assertions.assertFalse(notExists.hasData())
-                }
-            }catch (t:Throwable){
-                testContext.failNow(t)
+            testContext.verify {
+                Assertions.assertNotNull(queryDocument)
             }
-            testContext.completeNow()
+
+            val notExists = documentApplication.rpcRun {
+                it.queryDocumentById(Int64Value.of(-1))
+            }.await()
+
+            testContext.verify {
+                Assertions.assertFalse(notExists.hasData())
+            }
         }
     }
 

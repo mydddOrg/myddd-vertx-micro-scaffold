@@ -6,6 +6,7 @@ import io.vertx.core.json.JsonObject
 import io.vertx.ext.web.Router
 import io.vertx.kotlin.coroutines.await
 import io.vertx.kotlin.coroutines.dispatcher
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.myddd.vertx.grpc.GrpcInstanceFactory
@@ -14,7 +15,7 @@ import org.myddd.vertx.grpc.health.HealthGrpcService
 import org.myddd.vertx.web.router.AbstractRouter
 import org.myddd.vertx.web.router.ext.jsonFormatEnd
 
-class NodeRoute(vertx: Vertx,router: Router):AbstractRouter(vertx,router) {
+class NodeRoute(vertx: Vertx,router: Router,coroutineScope: CoroutineScope):AbstractRouter(vertx,router,coroutineScope) {
 
     init {
         nodeInfoRoute()

@@ -11,6 +11,7 @@ import io.vertx.kotlin.coroutines.await
 import io.vertx.kotlin.coroutines.dispatcher
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import net.bytebuddy.implementation.bytecode.Throw
 import org.hibernate.reactive.mutiny.Mutiny
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
@@ -23,6 +24,8 @@ import org.myddd.vertx.grpc.GrpcInstanceProvider
 import org.myddd.vertx.grpc.ServiceDiscoveryGrpcInstanceProvider
 import org.myddd.vertx.ioc.InstanceFactory
 import org.myddd.vertx.ioc.guice.GuiceInstanceProvider
+import org.myddd.vertx.junit.execute
+import org.myddd.vertx.repository.hibernate.MydddServiceContributor
 import org.myddd.vertx.string.RandomIDString
 import org.myddd.vertx.string.RandomIDStringProvider
 import java.util.*
@@ -37,29 +40,39 @@ abstract class AbstractTest {
 
         private lateinit var deployId:String
 
+        private val vertx by lazy { Vertx.vertx() }
+
+        private val guiceInstanceProvider by lazy {
+            GuiceInstanceProvider(Guice.createInjector(object : AbstractModule(){
+                override fun configure() {
+                    bind(Vertx::class.java).toInstance(vertx)
+                    MydddServiceContributor.vertx = vertx
+
+                    bind(Mutiny.SessionFactory::class.java).toInstance(
+                        Persistence.createEntityManagerFactory("default")
+                            .unwrap(Mutiny.SessionFactory::class.java))
+                    bind(IDGenerator::class.java).toInstance(SnowflakeDistributeId())
+
+                    bind(RandomIDString::class.java).to(RandomIDStringProvider::class.java)
+                    bind(DocumentRepository::class.java).to(DocumentRepositoryHibernate::class.java)
+
+                    bind(DistributeID::class.java).to(GrpcDistributeID::class.java)
+                    bind(GrpcInstanceProvider::class.java).to(ServiceDiscoveryGrpcInstanceProvider::class.java)
+                }
+            }))
+        }
+
         @BeforeAll
         @JvmStatic
-        fun beforeAll(vertx: Vertx,testContext: VertxTestContext){
+        fun beforeAll(testContext: VertxTestContext){
             GlobalScope.launch(vertx.dispatcher()) {
                 try {
-                    InstanceFactory.setInstanceProvider(GuiceInstanceProvider(Guice.createInjector(object : AbstractModule(){
-                        override fun configure() {
-                            bind(Vertx::class.java).toInstance(vertx)
-                            bind(Mutiny.SessionFactory::class.java).toInstance(
-                                Persistence.createEntityManagerFactory("default")
-                                    .unwrap(Mutiny.SessionFactory::class.java))
-                            bind(IDGenerator::class.java).toInstance(SnowflakeDistributeId())
-
-                            bind(RandomIDString::class.java).to(RandomIDStringProvider::class.java)
-                            bind(DocumentRepository::class.java).to(DocumentRepositoryHibernate::class.java)
-
-                            bind(DistributeID::class.java).to(GrpcDistributeID::class.java)
-                            bind(GrpcInstanceProvider::class.java).to(ServiceDiscoveryGrpcInstanceProvider::class.java)
-                        }
-                    })))
+                    vertx.executeBlocking<Unit> {
+                        InstanceFactory.setInstanceProvider(guiceInstanceProvider)
+                        it.complete()
+                    }.await()
 
                     startVerticle(vertx).await()
-
                 }catch (t:Throwable){
                     testContext.failNow(t)
                 }
@@ -69,14 +82,9 @@ abstract class AbstractTest {
 
         @AfterAll
         @JvmStatic
-        fun afterAll(vertx: Vertx,testContext: VertxTestContext){
-            GlobalScope.launch(vertx.dispatcher()) {
-                try {
-                    stopVerticle(vertx).await()
-                }catch (t:Throwable){
-                    testContext.failNow(t)
-                }
-                testContext.completeNow()
+        fun afterAll(testContext: VertxTestContext){
+            testContext.execute {
+                stopVerticle(vertx).await()
             }
         }
 

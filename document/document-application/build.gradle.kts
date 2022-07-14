@@ -16,9 +16,6 @@ tasks.withType<Test>().configureEach {
 
 dependencies {
     implementation(kotlin("stdlib"))
-    api("io.vertx:vertx-core:${rootProject.extra["vertx_version"]}")
-    api("io.vertx:vertx-lang-kotlin:${rootProject.extra["vertx_version"]}")
-    api("io.vertx:vertx-lang-kotlin-coroutines:${rootProject.extra["vertx_version"]}")
 
     implementation("io.vertx:vertx-web-client:${rootProject.extra["vertx_version"]}")
 
@@ -60,7 +57,7 @@ protobuf {
     }
     plugins {
         id("grpc") {
-            artifact = "io.grpc:protoc-gen-grpc-java:1.39.0"
+            artifact = "io.grpc:protoc-gen-grpc-java:${rootProject.extra["protoc-gen-version"]}"
         }
 
         id("vertx") {

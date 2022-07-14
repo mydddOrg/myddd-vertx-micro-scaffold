@@ -1,6 +1,7 @@
 package org.myddd.vertx.micro.rest.bootstrap.route
 
 import io.vertx.core.Vertx
+import io.vertx.ext.web.client.WebClient
 import io.vertx.junit5.VertxTestContext
 import io.vertx.kotlin.core.json.json
 import io.vertx.kotlin.core.json.obj
@@ -10,10 +11,15 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
+import org.myddd.vertx.ioc.InstanceFactory
 import org.myddd.vertx.micro.rest.bootstrap.AbstractTest
 
 class DocumentRouteTest: AbstractTest() {
 
+
+    private val webClient: WebClient by lazy {
+        InstanceFactory.getInstance(WebClient::class.java)
+    }
 
     @Test
     fun testCreateDocumentRoute(vertx: Vertx,testContext: VertxTestContext){
@@ -78,6 +84,24 @@ class DocumentRouteTest: AbstractTest() {
 
                 testContext.verify {
                     Assertions.assertEquals(200,queryResponse.statusCode())
+                }
+            }catch (t:Throwable){
+                testContext.failNow(t)
+            }
+            testContext.completeNow()
+        }
+    }
+
+    @Test
+    fun testNodeInfo(vertx: Vertx,testContext: VertxTestContext){
+        GlobalScope.launch(vertx.dispatcher()) {
+            try {
+                val response = webClient.get(port,host,"/v1/node")
+                    .send()
+                    .await()
+
+                testContext.verify {
+                    Assertions.assertEquals(200,response.statusCode())
                 }
             }catch (t:Throwable){
                 testContext.failNow(t)

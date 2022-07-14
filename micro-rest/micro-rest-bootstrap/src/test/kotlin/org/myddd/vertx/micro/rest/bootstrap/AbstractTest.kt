@@ -27,10 +27,6 @@ open class AbstractTest {
 
         const val port = 8080
 
-        val webClient: WebClient by lazy {
-            InstanceFactory.getInstance(WebClient::class.java)
-        }
-
 
         @BeforeAll
         @JvmStatic

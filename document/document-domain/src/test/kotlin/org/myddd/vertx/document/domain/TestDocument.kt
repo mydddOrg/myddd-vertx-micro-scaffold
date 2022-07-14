@@ -9,73 +9,58 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
+import org.myddd.vertx.junit.execute
 
 class TestDocument : AbstractTest() {
 
-
     @Test
-    fun testCreateDocument(vertx: Vertx,testContext: VertxTestContext){
-        GlobalScope.launch(vertx.dispatcher()) {
-            try {
-                val created = randomCreateDocument().await()
-                testContext.verify {
-                    Assertions.assertNotNull(created)
-                }
-            }catch (t:Throwable){
-                testContext.failNow(t)
+    fun testCreateDocument(testContext: VertxTestContext){
+        testContext.execute {
+            val created = randomCreateDocument().await()
+            testContext.verify {
+                Assertions.assertNotNull(created)
             }
-            testContext.completeNow()
         }
     }
 
     @Test
-    fun testQueryById(vertx: Vertx,testContext: VertxTestContext){
-        GlobalScope.launch(vertx.dispatcher()) {
-            try {
-                val created = randomCreateDocument().await()
-                testContext.verify {
-                    Assertions.assertNotNull(created)
-                }
-
-                val query = Document.queryDocumentById(created.id).await()
-                testContext.verify {
-                    Assertions.assertNotNull(query)
-                }
-
-                val notExists = Document.queryDocumentById(-1).await()
-                testContext.verify {
-                    Assertions.assertNull(notExists)
-                }
-            }catch (t:Throwable){
-                testContext.failNow(t)
+    fun testQueryById(testContext: VertxTestContext){
+        testContext.execute {
+            val created = randomCreateDocument().await()
+            testContext.verify {
+                Assertions.assertNotNull(created)
             }
-            testContext.completeNow()
+
+            val query = Document.queryDocumentById(created.id).await()
+            testContext.verify {
+                Assertions.assertNotNull(query)
+            }
+
+            val notExists = Document.queryDocumentById(-1).await()
+            testContext.verify {
+                Assertions.assertNull(notExists)
+            }
         }
     }
 
 
     @Test
-    fun testQueryByMediaId(vertx: Vertx,testContext: VertxTestContext){
-        GlobalScope.launch(vertx.dispatcher()) {
-            try {
-                val created = randomCreateDocument().await()
-                testContext.verify {
-                    Assertions.assertNotNull(created)
-                }
-
-                val query = Document.queryDocumentByMediaId(mediaId = created.mediaId).await()
-                testContext.verify {
-                    Assertions.assertNotNull(query)
-                }
-
-                val notExists = Document.queryDocumentByMediaId(mediaId = randomString()).await()
-                testContext.verify {
-                    Assertions.assertNull(notExists)
-                }
-            }catch (t:Throwable){
-                testContext.failNow(t)
+    fun testQueryByMediaId(testContext: VertxTestContext){
+        testContext.execute {
+            val created = randomCreateDocument().await()
+            testContext.verify {
+                Assertions.assertNotNull(created)
             }
-            testContext.completeNow()
+
+            val query = Document.queryDocumentByMediaId(mediaId = created.mediaId).await()
+            testContext.verify {
+                Assertions.assertNotNull(query)
+            }
+
+            val notExists = Document.queryDocumentByMediaId(mediaId = randomString()).await()
+            testContext.verify {
+                Assertions.assertNull(notExists)
+            }
         }
     }
 
